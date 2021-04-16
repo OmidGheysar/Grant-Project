@@ -110,3 +110,17 @@ nodes <- data.frame(id = c(unique(grant$Name.of.Awardee)) )
 edges <- data.frame(from = myData$V1, to = myData$V2)
 visNetwork(nodes, edges, width = "100%")
 
+names(grant)[9]
+a <- NULL
+for (row in 1:size){
+  for (subrow in (1:size)[-row]){
+    # print(grant[[9]][subrow])
+    if(grant[[9]][row]==grant[[9]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
+      # print("Ok")
+      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow]))
+    }
+  }
+}
+myData <- as.data.frame(a)
+
+
