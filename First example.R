@@ -84,18 +84,15 @@
 #   }
 # }
 
-
+# read the data
 grant <- read.csv(file = 'grant.csv')
 require(visNetwork, quietly = TRUE)
 a <- NULL
 size <- length(grant[[1]])
 for (row in 1:size){
   for (col in 3:7){
-    # a <- rbind(a,c(row,col))
     if (grant[[col]][row]==1){
       print(c(row,col))
-      # a <- rbind(a,c(j,4))
-      
       for(j in (1:size)[-row]){
         if (grant[[col]][j]==1){
           print(j)
@@ -116,10 +113,9 @@ names(grant)[9]
 a <- NULL
 for (row in 1:size){
   for (subrow in (1:size)[-row]){
-    # print(grant[[9]][subrow])
     if(grant[[9]][row]==grant[[9]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
-      # print("Ok")
       a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow]))
+      
     }
   }
 }
@@ -135,9 +131,7 @@ names(grant)[8]
 a <- NULL
 for (row in 1:size){
   for (subrow in (1:size)[-row]){
-    # print(grant[[9]][subrow])
     if(grant[[8]][row]==grant[[8]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
-      # print("Ok")
       a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow]))
     }
   }
