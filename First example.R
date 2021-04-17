@@ -96,7 +96,7 @@ for (row in 1:size){
       for(j in (1:size)[-row]){
         if (grant[[col]][j]==1){
           print(j)
-          a <- rbind(a,c(grant[[1]][row],grant[[1]][j]))
+          a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j],grant[[2]][row],grant[[10]][row]))
         }
       }
     }
@@ -114,7 +114,7 @@ a <- NULL
 for (row in 1:size){
   for (subrow in (1:size)[-row]){
     if(grant[[9]][row]==grant[[9]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
-      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow]))
+      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow],grant[[9]][row],grant[[10]][row]))
       
     }
   }
@@ -132,7 +132,7 @@ a <- NULL
 for (row in 1:size){
   for (subrow in (1:size)[-row]){
     if(grant[[8]][row]==grant[[8]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
-      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow]))
+      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow],grant[[9]][row],grant[[10]][row]))
     }
   }
 }
