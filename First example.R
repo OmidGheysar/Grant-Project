@@ -107,16 +107,25 @@ for (row in 1:size){
 
 myData <- as.data.frame(a)
 titles <- unique(grant$Title)
-# myData$V3 <- as.factor(myData$V3)
+myData$V3 <- as.factor(myData$V3)
 levels(myData$V3)[levels(myData$V3)==titles[1]] = "blue"
 levels(myData$V3)[levels(myData$V3)==titles[2]] = "purple"
 levels(myData$V3)[levels(myData$V3)==titles[3]] = "orange"
 levels(myData$V3)[levels(myData$V3)==titles[4]] = "green"
 levels(myData$V3)[levels(myData$V3)==titles[5]] = "yellow"
-myData <- head(myData,500)
+# myData <- head(myData,500)
 nodes <- data.frame(id = c(unique(grant$Name.of.Awardee)) )
 edges <- data.frame(from = myData$V1, to = myData$V2, color=myData$V3)
-visNetwork(nodes, edges, height = "900px", width = "100%")
+
+# nodes data.frame for legend
+lnodes <- data.frame(label = c(titles[1], titles[2],titles[3],"One Society Network",titles[5]),
+                     shape = c( "square"), color = c("blue", "purple","orange","green","yellow"),
+                     font.size =10,
+                     title = "Informations", id = 1:5)
+
+visNetwork(nodes, edges, main = "Within-grant graph", height = "800px", width = "100%") %>%
+  visLegend( addNodes = lnodes, useGroups = FALSE)
+
 
 names(grant)[9]
 a <- NULL
