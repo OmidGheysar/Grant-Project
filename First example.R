@@ -84,7 +84,9 @@
 #   }
 # }
 
+library(dplyr)
 # read the data
+require(visNetwork, quietly = TRUE)
 grant <- read.csv(file = 'grant.csv')
 require(visNetwork, quietly = TRUE)
 a <- NULL
@@ -96,7 +98,7 @@ for (row in 1:size){
       for(j in (1:size)[-row]){
         if (grant[[col]][j]==1){
           print(j)
-          a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j],grant[[2]][row],grant[[10]][row]))
+          a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j]))
         }
       }
     }
@@ -104,27 +106,39 @@ for (row in 1:size){
 }
 
 myData <- as.data.frame(a)
-
+titles <- unique(grant$Title)
+# myData$V3 <- as.factor(myData$V3)
+levels(myData$V3)[levels(myData$V3)==titles[1]] = "blue"
+levels(myData$V3)[levels(myData$V3)==titles[2]] = "purple"
+levels(myData$V3)[levels(myData$V3)==titles[3]] = "orange"
+levels(myData$V3)[levels(myData$V3)==titles[4]] = "green"
+levels(myData$V3)[levels(myData$V3)==titles[5]] = "yellow"
+myData <- head(myData,500)
 nodes <- data.frame(id = c(unique(grant$Name.of.Awardee)) )
-edges <- data.frame(from = myData$V1, to = myData$V2)
-visNetwork(nodes, edges, width = "100%")
+edges <- data.frame(from = myData$V1, to = myData$V2, color=myData$V3)
+visNetwork(nodes, edges, height = "900px", width = "100%")
 
 names(grant)[9]
 a <- NULL
 for (row in 1:size){
   for (subrow in (1:size)[-row]){
     if(grant[[9]][row]==grant[[9]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
-      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow],grant[[9]][row],grant[[10]][row]))
+      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow],grant[[9]][row]))
       
     }
   }
 }
 myData <- as.data.frame(a)
 
-nodes <- data.frame(id = c(unique(grant$Name.of.Awardee)) )
+a <- cbind(grant$Name.of.Awardee,grant$Gender)
+set <- as.data.frame(a)
+uniset <- unique(set)
 edges <- data.frame(from = myData$V1, to = myData$V2)
 visNetwork(nodes, edges, width = "100%")
-
+visNetwork(nodes, edges, height = "900px", width = "100%") %>% 
+  visGroups(groupname = "Male", color = "darkblue", shape = "square", 
+            shadow = list(enabled = TRUE)) %>% 
+  visGroups(groupname = "Female", color = "red", shape = "triangle")
 
 
 names(grant)[8]
@@ -138,7 +152,16 @@ for (row in 1:size){
 }
 myData <- as.data.frame(a)
 
-nodes <- data.frame(id = c(unique(grant$Name.of.Awardee)) )
+a <- cbind(grant$Name.of.Awardee,grant$Gender)
+set <- as.data.frame(a)
+uniset <- unique(set)
+nodes <- data.frame(id = uniset$V1, group = uniset$V2)
 edges <- data.frame(from = myData$V1, to = myData$V2)
 visNetwork(nodes, edges, width = "100%")
+
+
+visNetwork(nodes, edges, height = "900px", width = "100%") %>% 
+  visGroups(groupname = "Male", color = "darkblue", shape = "square", 
+            shadow = list(enabled = TRUE)) %>% 
+  visGroups(groupname = "Female", color = "red", shape = "triangle")
 

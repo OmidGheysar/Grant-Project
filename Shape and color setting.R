@@ -49,3 +49,48 @@ visNetwork(nodes, edges, width = "100%") %>%
   # red triangle for group "B"
   visGroups(groupname = "B", color = "red", shape = "triangle")  
 
+
+
+# how to use color for edges 
+edges <- data.frame(from = sample(1:10,8), to = sample(1:10, 8),
+                    
+                    # add labels on edges                  
+                    label = paste("Edge", 1:8),
+                    
+                    color = c("darkred", "black", "orange", "purple"),
+                    
+                    # length
+                    length = c(100,500),
+                    
+                    # width
+                    width = c(4,1),
+                    
+                    # arrows
+                    # arrows = c("to", "from", "middle", "middle;to"),
+                    
+                    # dashes
+                    dashes = c(TRUE, FALSE),
+                    
+                    # tooltip (html or character)
+                    title = paste("Edge", 1:8),
+                    
+                    # smooth
+                    # smooth = c(FALSE, TRUE),
+                    
+                    # shadow
+                    shadow = c(FALSE, TRUE, FALSE, TRUE)) 
+
+# head(edges)
+#  from to  label length    arrows dashes  title smooth shadow
+#    10  7 Edge 1    100        to   TRUE Edge 1  FALSE  FALSE
+#     4 10 Edge 2    500      from  FALSE Edge 2   TRUE   TRUE
+
+nodes <- data.frame(id = 1:10, group = c("A", "B"))
+
+visNetwork(nodes, edges, width = "100%")
+
+# Tips: the number of color should be proportional to the data frame size in case they are not equal
+
+
+
+
