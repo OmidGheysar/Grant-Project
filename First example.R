@@ -203,11 +203,13 @@ edges <- data.frame(from = myData$V1, to = myData$V2)
 # visNetwork(nodes, edges, width = "100%")
 
 
-visNetwork(nodes, edges, height = "900px", width = "100%") %>% 
+visNetwork(nodes, edges,main = "Within-universities graph", height = "900px", width = "100%") %>% 
   visGroups(groupname = "Male", color = "darkblue", shape = "square", 
             shadow = list(enabled = TRUE)) %>% 
-  visGroups(groupname = "Female", color = "red", shape = "triangle")
-
+  visGroups(groupname = "Female", color = "red", shape = "triangle") %>% 
+  visGroups(groupname = "A", color = "red") %>%
+  visGroups(groupname = "B", color = "lightblue") %>%
+  visLegend(width = 0.1, position = "right", main = "Group")
 
 
 
