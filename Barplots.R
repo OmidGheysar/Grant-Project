@@ -4,17 +4,17 @@ library(dplyr)
 library(ggplot2)
 grant <- read.csv(file = 'grant.csv')
 
-titles <- unique(grant$Title)
+
 grant$Title <- as.factor(grant$Title)
 
-levels(grant$Title)[levels(grant$Title)==titles[1]] = "CANMOD"
-levels(grant$Title)[levels(grant$Title)==titles[2]] = "MfPH"
-levels(grant$Title)[levels(grant$Title)==titles[3]] = "OMNI"
-levels(grant$Title)[levels(grant$Title)==titles[4]] = "OSN"
-levels(grant$Title)[levels(grant$Title)==titles[5]] = "SMfMEID"
+levels(grant$Title)[levels(grant$Title)==unique(grant$Title)[1]] = "CANMOD"
+levels(grant$Title)[levels(grant$Title)==unique(grant$Title)[2]] = "MfPH"
+levels(grant$Title)[levels(grant$Title)==unique(grant$Title)[3]] = "OMNI"
+levels(grant$Title)[levels(grant$Title)==unique(grant$Title)[4]] = "OSN"
+levels(grant$Title)[levels(grant$Title)==unique(grant$Title)[5]] = "SMfMEID"
 grant$Title <- as.character(grant$Title)
 
-
+titles <- unique(grant$Title)
 filterResultMan <- NULL
 filterResultWom <- NULL
 a <- NULL
