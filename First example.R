@@ -91,7 +91,7 @@ require(visNetwork, quietly = TRUE)
 grant <- read.csv(file = 'grant.csv')
 require(visNetwork, quietly = TRUE)
 
-# Within-grant graph -----------------------------------------------------------------
+# Within-province graph -----------------------------------------------------------------
 a <- NULL
 size <- length(grant[[1]])
 for (row in 1:size){
@@ -116,8 +116,11 @@ levels(myData$V3)[levels(myData$V3)==titles[2]] = "purple"
 levels(myData$V3)[levels(myData$V3)==titles[3]] = "orange"
 levels(myData$V3)[levels(myData$V3)==titles[4]] = "green"
 levels(myData$V3)[levels(myData$V3)==titles[5]] = "yellow"
-myData <- head(myData,500)
-nodes <- data.frame(id = c(unique(grant$Name.of.Awardee)) )
+# myData <- head(myData,500)
+a <- cbind(grant$Name.of.Awardee,grant$Gender)
+set <- as.data.frame(a)
+uniset <- unique(set)
+nodes <- data.frame(id = uniset$V1, group = uniset$V2)
 edges <- data.frame(from = myData$V1, to = myData$V2, color=myData$V3)
 
 # nodes data.frame for legend
@@ -127,12 +130,16 @@ lnodes <- data.frame(label = c(titles[1], titles[2],titles[3],"One Society Netwo
                      title = "Informations", id = 1:5)
 
 visNetwork(nodes, edges, main = "Within-grant graph", height = "800px", width = "100%") %>%
-  visLegend( addNodes = lnodes, useGroups = FALSE)
+  visLegend( addNodes = lnodes, useGroups = FALSE)%>% 
+  visGroups(groupname = "Male", color = "white", shape = "square", 
+            shadow = list(enabled = TRUE)) %>% 
+  visGroups(groupname = "Female", color = "black", shape = "triangle")
 
 # Within-province graph -----------------------------------------------------------------
 set.seed(12)
 names(grant)[9]
 a <- NULL
+size <- length(grant[[1]])
 for (row in 1:size){
   for (subrow in (1:size)[-row]){
     if(grant[[9]][row]==grant[[9]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
@@ -142,7 +149,7 @@ for (row in 1:size){
   }
 }
 myData <- as.data.frame(a)
-# myData <- head(myData,500)
+myData <- head(myData,500)
 myData <- unique(myData)
 titles <- unique(grant$Location)
 myData$V3 <- as.factor(myData$V3)
@@ -155,6 +162,7 @@ for (i in seq(1,length(titles))){
 a <- cbind(grant$Name.of.Awardee,grant$Gender)
 set <- as.data.frame(a)
 uniset <- unique(set)
+nodes <- data.frame(id = uniset$V1, group = uniset$V2)
 edges <- data.frame(from = myData$V1, to = myData$V2, color=myData$V3)
 
 # nodes data.frame for legend
@@ -166,16 +174,20 @@ visNetwork(nodes, edges, main = "Within-province graph", height = "800px", width
   visGroups(groupname = "Male", color = "darkblue", shape = "square",
             shadow = list(enabled = TRUE)) %>%
   visGroups(groupname = "Female", color = "red", shape = "triangle") %>% 
-  visLegend( addNodes = lnodes, useGroups = FALSE)
+  visLegend( addNodes = lnodes, useGroups = FALSE)%>% 
+  visGroups(groupname = "Male", color = "darkblue", shape = "square", 
+            shadow = list(enabled = TRUE)) %>% 
+  visGroups(groupname = "Female", color = "red", shape = "triangle")
 
 
 # Within-university graph -----------------------------------------------------------------
 names(grant)[8]
 a <- NULL
+size <- length(grant[[1]])
 for (row in 1:size){
   for (subrow in (1:size)[-row]){
     if(grant[[8]][row]==grant[[8]][subrow]&&grant[[1]][row]!=grant[[1]][subrow]){
-      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow],grant[[9]][row],grant[[10]][row]))
+      a <- rbind(a,c(grant[[1]][row],grant[[1]][subrow],grant[[9]][row]))
     }
   }
 }
@@ -188,7 +200,7 @@ set <- as.data.frame(a)
 uniset <- unique(set)
 nodes <- data.frame(id = uniset$V1, group = uniset$V2)
 edges <- data.frame(from = myData$V1, to = myData$V2)
-visNetwork(nodes, edges, width = "100%")
+# visNetwork(nodes, edges, width = "100%")
 
 
 visNetwork(nodes, edges, height = "900px", width = "100%") %>% 
