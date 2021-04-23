@@ -1,5 +1,5 @@
-install.packages("ggpubr")
-
+# install.packages("ggpubr")
+library(ggpubr)
 library(dplyr)
 library(ggplot2)
 grant <- read.csv(file = 'grant.csv')
@@ -41,5 +41,36 @@ p
 
 
 
+
+length(unique(grant$Location))
+grant$Location <- as.factor(grant$Location)
+class(grant$Location)
+Locations <- unique(grant$Location)
+titles <- unique(grant$Title)
+
+a <- NULL
+for (i in seq(1,length(titles))){
+  for(j in seq(1,11)){
+    num <- dim (grant %>% filter(Title == titles [i]) %>% filter(Location == Locations[j]))[1]
+    a <- rbind(a,c(titles[i],as.character(Locations[j]),num))
+  }
+}
+
+# filterResultMan<- grant %>% filter(Title == titles [1]) %>% filter(Location == Locations[1])
+
+myData <- as.data.frame(a)
+myData$V3 <- as.numeric(myData$V3)
+
+df2 <- data.frame(Grant=myData$V1,
+                  Location=myData$V2,
+                  numPeople=myData$V3)
+p <- 0
+p <- ggbarplot(df2, "Grant", "numPeople",
+               fill = "Location", color = "Location",
+               label = FALSE, lab.col = "white")
+
+p <- p + xlab("Name of Grant")
+p <- p + ylab("Number of people")
+p
 
 
