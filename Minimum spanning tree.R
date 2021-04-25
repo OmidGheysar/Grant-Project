@@ -42,8 +42,8 @@ tail(mst.bh)
 ### the mstree plot
 par(mar=c(0,0,0,0))
 plot(st_geometry(bh), border=gray(.5))
-# plot(mst.bh, coordinates(as(bh, "Spatial")), col=2,
-#      cex.lab=.6, cex.circles=0.035, fg="blue", add=TRUE)
+plot(mst.bh, coordinates(as(bh, "Spatial")), col=2,
+     cex.lab=.6, cex.circles=0.035, fg="blue", add=TRUE)
 
 
 word.list <- list(letters[1:4], letters[1:5], letters[1:2], letters[1:6])
@@ -54,7 +54,8 @@ mat <- t(sapply(word.list, "[", i = seq.max))
 
 g <- sample_gnp(100, 3/100)
 g_mst <- mst(g)
-
+plot(g_mst)
+compg.edges <- as.data.frame(get.edgelist(g_mst))
 
 
 n <- 5
@@ -68,3 +69,4 @@ g <- set_edge_attr(g, 'weight', value=runif(n_edge))
 plot(g)
 
 mst <-  minimum.spanning.tree(g)
+plot(mst)

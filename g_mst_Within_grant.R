@@ -1,3 +1,4 @@
+
 library(dplyr)
 library(randomcoloR)
 # read the data
@@ -52,7 +53,12 @@ myData <- head(myData,500)
 a <- cbind(grant$Name.of.Awardee,grant$Gender)
 set <- as.data.frame(a)
 uniset <- unique(set)
-nodes <- data.frame(id = uniset$V1, group = uniset$V2)
+nodes <- data.frame(id = uniset$V1,
+                    # add labels on nodes
+                    label = paste(uniset$V1),
+                    # tooltip (html or character), when the mouse is above
+                    title = paste0("<p><b>", uniset$V1),
+                    group = uniset$V2)
 edges <- data.frame(from = myData$V1, to = myData$V2, color=myData$V3)
 
 # nodes data.frame for legend
@@ -69,34 +75,32 @@ visNetwork(nodes, edges, main = "Within-grant graph", height = "800px", width = 
 
 
 
-# x <- c(1,2,3,4)
-# y <- c(2,3,4,5)
-# 
-# setdiff(x, y)
-# 
-# m <- matrix(1:20, ncol = 4) 
-# colnames(m) <- letters[1:4]
-# 
-# subset(m, m[,4] == 16,m[,3]==11)
-# df <- data.frame(matrix(ncol = 3, nrow = 0))
-# x <- c("name", "age", "gender")
-# colnames(df) <- x
-
-
-# data(mtcars)
-
-## 75% of the sample size
-smp_size <- floor(0.75 * nrow(myData))
-
-## set the seed to make your partition reproducible
-set.seed(123)
-train_ind <- sample(seq_len(nrow(myData)), size = smp_size)
-myData <- myData[train_ind, ]
 
 
 
+# nodes=cbind('id'=c('Fermenters','Methanogens','carbs','CO2','H2','other','CH4','H2O'),
+#             'type'=c(rep('Microbe',2),rep('nonBio',6)))
+nodes=cbind('id'=uniset$V1)
+nodes
 
+# links=cbind('from'=c('carbs',rep('Fermenters',3),rep('Methanogens',2),'CO2','H2'),
+#             'to'=c('Fermenters','other','CO2','H2','CH4','H2O',rep('Methanogens',2)),
+#             'type'=c('uptake',rep('output',5),rep('uptake',2)),
+#             'weight'=rep(1,8))
+myData$V3 <- as.character(myData$V3)
+links=cbind('from'=myData$V1,
+            'to'=myData$V2,
+            'type'= myData$V3)
 
+links
 
+library(igraph)
+net = graph_from_data_frame(links,vertices = nodes,directed = T)
+plot(net)
+g_mst <- mst(net)
+plot(mst(net))
+compg.edges <- as.data.frame(get.edgelist(g_mst))
+myData <- compg.edges
+a <- as_long_data_frame(g_mst)
 
 
