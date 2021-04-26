@@ -8,7 +8,7 @@ require(visNetwork, quietly = TRUE)
 
 # Within-province graph -----------------------------------------------------------------
 
-a <- data.frame(matrix(ncol = 3, nrow = 0))
+a <- data.frame(matrix(ncol = 4, nrow = 0))
 colnames(a) <- c("V1", "V2", "V3")
 size <- length(grant[[1]])
 for (row in 1:size){
@@ -19,12 +19,22 @@ for (row in 1:size){
         if (grant[[col]][j]==1){
           print(j)
           if(dim(a)[1]==0){
-            a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j]))
+            a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j],3))
           }else{
-            colnames(a) <- c("V1", "V2", "V3")
+            colnames(a) <- c("V1", "V2", "V3","V4")
             checkReverse <- a %>% filter(V1==grant[[1]][j]) %>% filter(V2==grant[[1]][row])
             if(dim (checkReverse)[1]==0){
-              a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j]))
+              # a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j]))
+              weight <- 3
+              if(grant[[9]][row]==grant[[9]][j]){
+                weight <- 1
+              }
+              if(grant[[8]][row]==grant[[8]][j]){
+                weight <- 2
+              }
+              a <- rbind(a,c(grant[[1]][row],grant[[1]][j],grant[[2]][j],weight))
+              
+              # ----------------------------------------------------------
             }
           }
           
@@ -36,10 +46,10 @@ for (row in 1:size){
 
 myData <- as.data.frame(a)
 ## set the seed to make your partition reproducible
-set.seed(123)
-smp_size <- floor(0.9 * nrow(myData))
-train_ind <- sample(seq_len(nrow(myData)), size = smp_size)
-myData <- myData[train_ind, ]
+# set.seed(123)
+# smp_size <- floor(0.9 * nrow(myData))
+# train_ind <- sample(seq_len(nrow(myData)), size = smp_size)
+# myData <- myData[train_ind, ]
 
 
 titles <- unique(grant$Title)
@@ -49,7 +59,8 @@ levels(myData$V3)[levels(myData$V3)==titles[2]] = "purple"
 levels(myData$V3)[levels(myData$V3)==titles[3]] = "orange"
 levels(myData$V3)[levels(myData$V3)==titles[4]] = "green"
 levels(myData$V3)[levels(myData$V3)==titles[5]] = "yellow"
-myData <- head(myData,500)
+save_data <- myData
+myData <- head(myData,300)
 a <- cbind(grant$Name.of.Awardee,grant$Gender)
 set <- as.data.frame(a)
 uniset <- unique(set)
@@ -63,14 +74,14 @@ edges <- data.frame(from = myData$V1, to = myData$V2, color=myData$V3)
 
 # nodes data.frame for legend
 lnodes <- data.frame(label = c(titles[1], titles[2],titles[3],"One Society Network",titles[5]),
-                     shape = c( "square"), color = c("blue", "purple","orange","green","yellow"),            
+                     shape = c( "square"), color = c("blue", "purple","orange","green","yellow"),
                      font.size =10,
                      title = "Informations", id = 1:5)
 
 visNetwork(nodes, edges, main = "Within-grant graph", height = "800px", width = "100%") %>%
-  visLegend( addNodes = lnodes, useGroups = FALSE)%>% 
-  visGroups(groupname = "Male", color = "white", shape = "square", 
-            shadow = list(enabled = TRUE)) %>% 
+  visLegend( addNodes = lnodes, useGroups = FALSE)%>%
+  visGroups(groupname = "Male", color = "white", shape = "square",
+            shadow = list(enabled = TRUE)) %>%
   visGroups(groupname = "Female", color = "black", shape = "triangle")
 
 
@@ -78,15 +89,13 @@ visNetwork(nodes, edges, main = "Within-grant graph", height = "800px", width = 
 
 
 
-# nodes=cbind('id'=c('Fermenters','Methanogens','carbs','CO2','H2','other','CH4','H2O'),
-#             'type'=c(rep('Microbe',2),rep('nonBio',6)))
-nodes=cbind('id'=uniset$V1)
-nodes
 
-# links=cbind('from'=c('carbs',rep('Fermenters',3),rep('Methanogens',2),'CO2','H2'),
-#             'to'=c('Fermenters','other','CO2','H2','CH4','H2O',rep('Methanogens',2)),
-#             'type'=c('uptake',rep('output',5),rep('uptake',2)),
-#             'weight'=rep(1,8))
+# uniset = unique(myData$V1)
+nodes=cbind('id'=uniset$V1)
+# test <- unique(c(unique(myData$V1),unique(myData$V2)))
+# nodes = cbind('id'=test)
+
+
 myData$V3 <- as.character(myData$V3)
 links=cbind('from'=myData$V1,
             'to'=myData$V2,
@@ -95,12 +104,16 @@ links=cbind('from'=myData$V1,
 links
 
 library(igraph)
-net = graph_from_data_frame(links,vertices = nodes,directed = T)
+net = graph_from_data_frame(links,vertices = nodes,directed = FALSE)
 plot(net)
-g_mst <- mst(net)
-plot(mst(net))
-compg.edges <- as.data.frame(get.edgelist(g_mst))
-myData <- compg.edges
+myWeights <- as.numeric(myData$V4)
+g_mst <- mst(net,weights = rep(1,300),directed = FALSE)
+plot(g_mst)
+# plot(mst(net,myData$V4))
+# compg.edges <- as.data.frame(get.edgelist(g_mst))
+# myData <- compg.edges
 a <- as_long_data_frame(g_mst)
-
+colnames(a) <- c("V1", "V2", "V3","V4","V5")
+myData <- data.frame(V1=a$V4,V2=a$V5,V3=a$V3)
+colnames(myData) <- c("V1", "V2", "V3")
 
