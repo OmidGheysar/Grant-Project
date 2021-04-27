@@ -58,6 +58,7 @@ factor_data <- factor(myData$V1)
 num_data <- as.numeric(factor_data)
 levels(factor_data)[num_data]
 
+
 identifiers <- c(DF$from,DF$to)
 factor_data <- factor(identifiers)
 length(as.numeric(factor(identifiers)))
@@ -68,8 +69,52 @@ improvedEdgesReal <- data.frame('from'=levels(factor_data)[allVector[1:(size/2)]
                                 'to'=levels(factor_data)[allVector[(size/2+1):size]],'weights'=1:8)
 arcs <- as.matrix(improvedEdges)
 
-tree1 <- getMinimumSpanningTree(as.numeric(factor(nodes)), arcs, algorithm = "Kruskal")
+tree1 <- getMinimumSpanningTree(as.numeric(factor(nodes)), arcs, algorithm = "Prim")
+data.frame(from=levels(factor_data)[tree1[[2]][,1]],to=levels(factor_data)[tree1[[2]][,2]])
 levels(factor_data)[allVector]
+
+
+saveData <- myData
+
+
+
+myData <- head(saveData,4628)
+identifiers <- c(myData$V1,myData$V2)
+factor_data <- factor(identifiers)
+length(as.numeric(factor(identifiers)))
+allVector <- as.numeric(factor(identifiers))
+size = length(as.numeric(factor(identifiers)))
+improvedEdges <- data.frame('from'=allVector[1:(size/2)],'to'=allVector[(size/2+1):size],'weights'=rep(1,4628))
+improvedEdgesReal <- data.frame('from'=levels(factor_data)[allVector[1:(size/2)]],
+                                'to'=levels(factor_data)[allVector[(size/2+1):size]],'weights'=rep(1,4628))
+arcs <- as.matrix(improvedEdges)
+
+tree1 <- getMinimumSpanningTree(unique(allVector), arcs, algorithm = "Boruvka")
+data.frame(from=levels(factor_data)[tree1[[2]][,1]],to=levels(factor_data)[tree1[[2]][,2]])
+levels(factor_data)[allVector]
+
+arcs <- matrix(c(1:10),
+               ncol = 2, byrow = TRUE)
+
+matrix <- as.matrix(data.frame('from' = 1:1000,'to' = (1:1000)+1, 'weights'= rep(1,1000)))
+tree1 <- getMinimumSpanningTree(1:1000, matrix, algorithm = "Boruvka")  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
