@@ -96,8 +96,8 @@ levels(factor_data)[allVector]
 arcs <- matrix(c(1:10),
                ncol = 2, byrow = TRUE)
 
-matrix <- as.matrix(data.frame('from' = 1:1000,'to' = (1:1000)+1, 'weights'= rep(1,1000)))
-tree1 <- getMinimumSpanningTree(1:1000, matrix, algorithm = "Boruvka")  
+matrix <- as.matrix(data.frame('from' = 1:100,'to' = (1:100)+1, 'weights'= rep(1,100)))
+tree1 <- getMinimumSpanningTree(1:100, matrix, algorithm = "Boruvka")  
 
 
 

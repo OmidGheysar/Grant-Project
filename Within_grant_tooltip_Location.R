@@ -59,7 +59,7 @@ nodes <- data.frame(id = uniset$V1,
                     label = paste(uniset$V1),
                     # tooltip (html or character), when the mouse is above
                     title = paste0("<p><b>", uniset$V1),
-                    group = uniset$V3)
+                    group = uniset$V2)
 edges <- data.frame(from = myData$V1, to = myData$V2, color=myData$V3)
 
 # nodes data.frame for legend
@@ -69,11 +69,9 @@ lnodes <- data.frame(label = c(titles[1], titles[2],titles[3],"One Society Netwo
                      title = "Informations", id = 1:5)
 
 visNetwork(nodes, edges, main = "Within-grant graph", height = "800px", width = "100%") %>%
-  visLegend( addNodes = lnodes, useGroups = TRUE)
-
-
-
-
-
+  visLegend( addNodes = lnodes, useGroups = FALSE)%>% 
+  visGroups(groupname = "Male", color = "white", shape = "square", 
+            shadow = list(enabled = TRUE)) %>% 
+  visGroups(groupname = "Female", color = "black", shape = "triangle")
 
 
