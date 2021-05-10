@@ -50,7 +50,7 @@ levels(myData$V3)[levels(myData$V3)==titles[2]] = "purple"
 levels(myData$V3)[levels(myData$V3)==titles[3]] = "orange"
 levels(myData$V3)[levels(myData$V3)==titles[4]] = "green"
 levels(myData$V3)[levels(myData$V3)==titles[5]] = "yellow"
-# myData <- head(myData,500)
+myData <- head(myData,500)
 a <- cbind(grant$Name.of.Awardee,grant$Gender,grant$Location)
 set <- as.data.frame(a)
 uniset <- unique(set)
